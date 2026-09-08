@@ -27,15 +27,29 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  normalized text;
 begin
-  if new.phone_normalized is not null and new.phone_normalized <> '' then
-    if exists (
-      select 1 from public.contacts c
-      where c.phone_normalized = new.phone_normalized
-        and c.id <> coalesce(new.id, '00000000-0000-0000-0000-000000000000'::uuid)
-    ) then
-      raise exception 'duplicate_contact_phone' using errcode = '23505';
-    end if;
+  normalized := case
+    when new.phone is null or btrim(new.phone) = '' then null
+    when regexp_replace(new.phone, '[^0-9+]', '', 'g') like '0098%' then
+      '+98' || substr(regexp_replace(new.phone, '[^0-9+]', '', 'g'), 5)
+    when regexp_replace(new.phone, '[^0-9+]', '', 'g') like '+98%' then
+      regexp_replace(new.phone, '[^0-9+]', '', 'g')
+    when regexp_replace(new.phone, '[^0-9+]', '', 'g') like '98%' then
+      '+' || regexp_replace(new.phone, '[^0-9+]', '', 'g')
+    when regexp_replace(new.phone, '[^0-9+]', '', 'g') like '09%' then
+      '+98' || substr(regexp_replace(new.phone, '[^0-9+]', '', 'g'), 2)
+    else
+      regexp_replace(new.phone, '[^0-9+]', '', 'g')
+  end;
+
+  if normalized is not null and normalized <> '' and exists (
+    select 1 from public.contacts c
+    where c.phone_normalized = normalized
+      and c.id <> coalesce(new.id, '00000000-0000-0000-0000-000000000000'::uuid)
+  ) then
+    raise exception 'duplicate_contact_phone' using errcode = '23505';
   end if;
   return new;
 end;
