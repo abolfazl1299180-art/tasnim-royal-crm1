@@ -1,0 +1,9 @@
+import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/ui/page-header";
+
+export default async function PaymentsPage() {
+  const supabase = await createClient();
+  const { data: payments } = await supabase.from("payments").select("id,amount,status,paid_at,method,reference,contacts(first_name,last_name)").order("created_at", { ascending: false }).limit(50);
+  const total = payments?.reduce((sum, item) => sum + Number(item.amount), 0) || 0;
+  return <><PageHeader title="پرداخت‌ها" description="ثبت و پیگیری وضعیت پرداخت‌ها" action="ثبت پرداخت" /><div className="mb-5 rounded-3xl bg-slate-950 p-6 text-white"><p className="text-sm text-slate-400">مجموع پرداخت‌های ثبت‌شده</p><p className="mt-2 text-3xl font-black">{total.toLocaleString("fa-IR")} <span className="text-sm font-bold text-amber-400">تومان</span></p></div><div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"><div className="overflow-x-auto"><table className="w-full min-w-[700px] text-right text-sm"><thead className="bg-slate-50 text-xs text-slate-500"><tr><th className="px-5 py-4">مخاطب</th><th>مبلغ</th><th>وضعیت</th><th>روش</th><th>تاریخ</th></tr></thead><tbody>{payments?.map((payment) => <tr key={payment.id} className="border-t border-slate-100"><td className="px-5 py-4 font-bold">{Array.isArray(payment.contacts) ? "—" : `${payment.contacts?.first_name || ""} ${payment.contacts?.last_name || ""}`}</td><td>{Number(payment.amount).toLocaleString("fa-IR")}</td><td>{payment.status}</td><td>{payment.method || "—"}</td><td>{payment.paid_at ? new Date(payment.paid_at).toLocaleDateString("fa-IR") : "—"}</td></tr>)}</tbody></table></div>{!payments?.length && <div className="p-12 text-center text-sm text-slate-400">پرداختی ثبت نشده است.</div>}</div></>;
+}
