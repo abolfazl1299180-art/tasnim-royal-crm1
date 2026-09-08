@@ -10,8 +10,9 @@
    - `supabase/migrations/003_business_rules.sql`
    - `supabase/migrations/004_admin_safety.sql`
    - `supabase/migrations/005_harden_contacts_rls.sql`
+   - `supabase/migrations/006_contact_phone_normalization.sql`
 
-Migration دوم سطح دسترسی عملیاتی CRM و به‌روزرسانی خودکار `updated_at` را سخت‌گیرانه‌تر می‌کند. Migration سوم قوانین تجاری ظرفیت دوره و سازگاری پرداخت با ثبت‌نام را در سطح دیتابیس enforce می‌کند. Migration چهارم از قفل‌شدن سیستم به‌دلیل تغییر یا حذف مدیر فعال جلوگیری می‌کند. Migration پنجم نوشتن مخاطبین را فقط به نقش‌های فعال CRM محدود می‌کند.
+Migration دوم سطح دسترسی عملیاتی CRM و `updated_at` را سخت‌گیرانه‌تر می‌کند. Migration سوم قوانین تجاری ظرفیت دوره و سازگاری پرداخت با ثبت‌نام را در سطح دیتابیس enforce می‌کند. Migration چهارم از قفل‌شدن سیستم به‌دلیل تغییر یا حذف مدیر فعال جلوگیری می‌کند. Migration پنجم نوشتن مخاطبین را فقط به نقش‌های فعال CRM محدود می‌کند. Migration ششم شماره‌های موبایل ایران را برای مقایسه به قالب استاندارد تبدیل می‌کند و از ثبت شماره تکراری جلوگیری می‌کند.
 
 ## 2. حساب اصلی
 
