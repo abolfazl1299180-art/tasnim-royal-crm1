@@ -1,12 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-
 export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
-  useEffect(() => {
-    // Keep the global error boundary quiet; details stay in server logs.
-  }, []);
-
   return (
     <main className="flex min-h-[60vh] items-center justify-center">
       <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
