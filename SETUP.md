@@ -1,27 +1,29 @@
 # راه‌اندازی Tasnim Royal CRM
 
+## وضعیت
+CRM شامل بانک اطلاعات مخاطبین، پیگیری‌ها، وظایف، دوره‌ها، ثبت‌نام‌ها، پرداخت‌ها، قیف فروش، برچسب‌گذاری، تاریخچه تعاملات و Audit Log است.
+
 ## 1. Supabase
 
 1. یک پروژه Supabase بسازید.
 2. مقدارهای `NEXT_PUBLIC_SUPABASE_URL` و `NEXT_PUBLIC_SUPABASE_ANON_KEY` را در `.env.local` قرار دهید.
-3. فایل‌های migration را به‌ترتیب در SQL Editor اجرا کنید:
-   - `supabase/migrations/001_initial_schema.sql`
-   - `supabase/migrations/002_harden_rls.sql`
-   - `supabase/migrations/003_business_rules.sql`
-   - `supabase/migrations/004_admin_safety.sql`
-   - `supabase/migrations/005_harden_contacts_rls.sql`
-   - `supabase/migrations/006_contact_phone_normalization.sql`
+3. فایل‌های migration را به‌ترتیب نام اجرا کنید:
+   - `001_initial_schema.sql`
+   - `002_harden_rls.sql`
+   - `003_business_rules.sql`
+   - `004_admin_safety.sql`
+   - `004_harden_contacts_rls.sql`
+   - `006_contact_phone_normalization.sql`
+   - `007_crm_growth.sql`
 
-Migration دوم سطح دسترسی عملیاتی CRM و `updated_at` را سخت‌گیرانه‌تر می‌کند. Migration سوم قوانین تجاری ظرفیت دوره و سازگاری پرداخت با ثبت‌نام را در سطح دیتابیس enforce می‌کند. Migration چهارم از قفل‌شدن سیستم به‌دلیل تغییر یا حذف مدیر فعال جلوگیری می‌کند. Migration پنجم نوشتن مخاطبین را فقط به نقش‌های فعال CRM محدود می‌کند. Migration ششم شماره‌های موبایل ایران را برای مقایسه به قالب استاندارد تبدیل می‌کند و از ثبت شماره تکراری جلوگیری می‌کند.
+Migration 006 شماره موبایل ایران را استاندارد و از ثبت تکراری جلوگیری می‌کند. Migration 007 قیف فروش، تگ‌ها، Audit Log و ثبت خودکار رویدادهای پرونده مخاطب را اضافه می‌کند.
 
 ## 2. حساب اصلی
-
-حساب اصلی CRM باید با این مشخصات ایجاد شود:
 
 - Username: `tasnimroyal`
 - Role: `admin`
 
-رمز عبور نباید در GitHub یا داخل سورس‌کد ذخیره شود. حساب Auth را در Supabase ایجاد کنید و در metadata کاربر مقدار `username` را برابر `tasnimroyal` قرار دهید. Trigger دیتابیس هنگام ایجاد اولین کاربر، نقش او را به‌صورت خودکار `admin` می‌کند.
+رمز عبور نباید در GitHub یا سورس‌کد ذخیره شود. حساب Auth را در Supabase ایجاد کنید و در metadata مقدار `username` را برابر `tasnimroyal` قرار دهید.
 
 ## 3. اجرای محلی
 
@@ -33,4 +35,4 @@ npm run build
 npm run dev
 ```
 
-سپس مسیر `/login` برای ورود و `/` برای پنل CRM استفاده می‌شود.
+مسیر `/login` برای ورود و `/` برای پنل اصلی است. مسیر `/pipeline` قیف فروش و `/audit` تاریخچه تغییرات را نمایش می‌دهد.
