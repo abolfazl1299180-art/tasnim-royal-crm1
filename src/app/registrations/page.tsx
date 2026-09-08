@@ -13,7 +13,7 @@ export default async function RegistrationsPage() {
   const supabase = await createClient();
   const { data: registrations } = await supabase
     .from("registrations")
-    .select("id, status, registered_at, notes, contacts(first_name,last_name), courses(title)")
+    .select("id, contact_id, status, registered_at, notes, contacts(first_name,last_name), courses(title)")
     .order("registered_at", { ascending: false })
     .limit(100);
 
@@ -45,7 +45,7 @@ export default async function RegistrationsPage() {
                   <tr key={registration.id} className="border-t border-slate-100 hover:bg-slate-50">
                     <td className="px-5 py-4 font-bold">
                       {contact ? (
-                        <Link href={`/contacts/${registration.id}`} className="hover:text-amber-600">
+                        <Link href={`/contacts/${registration.contact_id}`} className="hover:text-amber-600">
                           {contact.first_name} {contact.last_name}
                         </Link>
                       ) : "—"}
