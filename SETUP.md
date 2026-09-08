@@ -7,12 +7,12 @@ CRM شامل بانک اطلاعات مخاطبین، پیگیری‌ها، وظ
 
 1. یک پروژه Supabase بسازید.
 2. مقدارهای `NEXT_PUBLIC_SUPABASE_URL` و `NEXT_PUBLIC_SUPABASE_ANON_KEY` را در `.env.local` قرار دهید.
-3. فایل‌های migration را به‌ترتیب نام اجرا کنید:
+3. فایل‌های migration را به‌ترتیب اجرا کنید:
    - `001_initial_schema.sql`
    - `002_harden_rls.sql`
    - `003_business_rules.sql`
    - `004_admin_safety.sql`
-   - `004_harden_contacts_rls.sql`
+   - `005_harden_contacts_rls.sql`
    - `006_contact_phone_normalization.sql`
    - `007_crm_growth.sql`
 
