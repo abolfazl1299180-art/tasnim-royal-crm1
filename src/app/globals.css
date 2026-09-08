@@ -2,8 +2,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f8fa;
-  --foreground: #111827;
+  --background: #f5f7fb;
+  --foreground: #0f172a;
   --primary: #d4af37;
 }
 
@@ -22,7 +22,13 @@ button, input, select, textarea { font: inherit; }
 button, a, select, input[type="checkbox"], input[type="radio"] { -webkit-tap-highlight-color: transparent; }
 input, select, textarea { max-width: 100%; }
 textarea { resize: vertical; }
+button, a { transition: all 180ms ease; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgb(245 158 11 / 20%); outline-offset: 2px; }
 
 @media (max-width: 639px) {
   input, select, textarea { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
