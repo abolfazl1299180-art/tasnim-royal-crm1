@@ -4,7 +4,11 @@
 
 1. یک پروژه Supabase بسازید.
 2. مقدارهای `NEXT_PUBLIC_SUPABASE_URL` و `NEXT_PUBLIC_SUPABASE_ANON_KEY` را در `.env.local` قرار دهید.
-3. فایل `supabase/migrations/001_initial_schema.sql` را در SQL Editor اجرا کنید.
+3. فایل‌های migration را به‌ترتیب در SQL Editor اجرا کنید:
+   - `supabase/migrations/001_initial_schema.sql`
+   - `supabase/migrations/002_harden_rls.sql`
+
+Migration دوم سطح دسترسی عملیاتی CRM و به‌روزرسانی خودکار `updated_at` را سخت‌گیرانه‌تر می‌کند.
 
 ## 2. حساب اصلی
 
