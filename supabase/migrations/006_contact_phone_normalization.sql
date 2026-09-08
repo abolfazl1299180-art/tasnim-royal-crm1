@@ -60,6 +60,25 @@ create trigger contacts_prevent_duplicate_phone
 before insert or update of phone on public.contacts
 for each row execute procedure public.prevent_duplicate_contact_phone();
 
+-- Prefer a unique index for race-safe enforcement when the legacy database is clean.
+-- On an existing database that already contains duplicates, keep the trigger-based
+-- protection and leave cleanup to an explicit, supervised data-cleaning operation.
+do $$
+begin
+  if not exists (
+    select 1
+    from public.contacts
+    where phone_normalized is not null
+    group by phone_normalized
+    having count(*) > 1
+  ) then
+    create unique index if not exists contacts_phone_normalized_uidx
+      on public.contacts(phone_normalized)
+      where phone_normalized is not null;
+  end if;
+end;
+$$;
+
 create index if not exists contacts_phone_normalized_idx
   on public.contacts(phone_normalized)
   where phone_normalized is not null;
