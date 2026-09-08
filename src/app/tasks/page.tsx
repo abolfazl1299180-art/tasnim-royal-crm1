@@ -1,0 +1,8 @@
+import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/ui/page-header";
+
+export default async function TasksPage() {
+  const supabase = await createClient();
+  const { data: tasks } = await supabase.from("tasks").select("id,title,description,due_at,status,priority").order("due_at", { ascending: true }).limit(50);
+  return <><PageHeader title="وظایف" description="مدیریت کارهای روزانه تیم" action="وظیفه جدید" /><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{tasks?.map((task) => <article key={task.id} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><h2 className="font-black">{task.title}</h2><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold">اولویت {task.priority}</span></div><p className="mt-3 text-sm leading-6 text-slate-500">{task.description || "بدون توضیحات"}</p><div className="mt-5 flex justify-between text-xs text-slate-400"><span>{task.status}</span><span>{task.due_at ? new Date(task.due_at).toLocaleDateString("fa-IR") : "بدون مهلت"}</span></div></article>)}</div>{!tasks?.length && <div className="rounded-3xl bg-white p-12 text-center text-sm text-slate-400">وظیفه‌ای ثبت نشده است.</div>}</>;
+}
