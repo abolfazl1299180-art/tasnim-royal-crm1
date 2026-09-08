@@ -1,4 +1,5 @@
 "use client";
+
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
@@ -39,7 +40,13 @@ function RegistrationForm() {
     });
 
     if (error) {
-      setError(error.code === "23505" ? "این مخاطب قبلاً در این دوره ثبت‌نام شده است." : "ثبت‌نام انجام نشد.");
+      if (error.code === "23505") {
+        setError("این مخاطب قبلاً در این دوره ثبت‌نام شده است.");
+      } else if (error.code === "23514") {
+        setError("ظرفیت این دوره تکمیل شده است.");
+      } else {
+        setError("ثبت‌نام انجام نشد.");
+      }
       setSaving(false);
       return;
     }
