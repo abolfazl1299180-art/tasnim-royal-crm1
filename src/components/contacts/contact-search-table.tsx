@@ -1,57 +1,8 @@
 "use client";
-
 import Link from "next/link";
-import { useMemo, useState } from "react";
 
-type Contact = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  phone: string | null;
-  status: string;
-  source: string | null;
-  created_at: string;
-};
-
-const statusLabels: Record<string, string> = { lead: "سرنخ", active: "فعال", inactive: "غیرفعال", customer: "مشتری" };
-
-export function ContactSearchTable({ contacts }: { contacts: Contact[] }) {
-  const [query, setQuery] = useState("");
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return contacts;
-    return contacts.filter((contact) =>
-      `${contact.first_name} ${contact.last_name} ${contact.phone ?? ""} ${contact.source ?? ""}`.toLowerCase().includes(q),
-    );
-  }, [contacts, query]);
-
-  return (
-    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-100 p-4">
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="جستجوی نام، شماره تماس یا منبع..."
-          className="w-full max-w-md rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-amber-400"
-        />
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[700px] text-right text-sm">
-          <thead className="bg-slate-50 text-xs text-slate-500"><tr><th className="px-5 py-4">نام</th><th>موبایل</th><th>وضعیت</th><th>منبع</th><th>تاریخ ثبت</th></tr></thead>
-          <tbody>
-            {filtered.map((contact) => (
-              <tr key={contact.id} className="border-t border-slate-100 hover:bg-slate-50">
-                <td className="px-5 py-4 font-bold"><Link href={`/contacts/${contact.id}`} className="hover:text-amber-600">{contact.first_name} {contact.last_name}</Link></td>
-                <td>{contact.phone || "—"}</td>
-                <td><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold">{statusLabels[contact.status] || contact.status}</span></td>
-                <td>{contact.source || "—"}</td>
-                <td>{new Date(contact.created_at).toLocaleDateString("fa-IR")}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {!filtered.length && <div className="p-12 text-center text-sm text-slate-400">نتیجه‌ای برای جستجو پیدا نشد.</div>}
-    </div>
-  );
-}
+type Contact={id:string;first_name:string;last_name:string;phone:string|null;status:string;source:string|null;sales_stage:string;created_at:string};
+const statusLabels:Record<string,string>={lead:"سرنخ",active:"فعال",inactive:"غیرفعال",customer:"مشتری"};
+const stageLabels:Record<string,string>={new:"سرنخ جدید",contacted:"تماس گرفته شد",qualified:"واجد شرایط",proposal:"پیشنهاد / مذاکره",won:"برنده / مشتری",lost:"از دست رفته"};
+function href(page:number,q:string,status:string,stage:string){const p=new URLSearchParams();if(q)p.set("q",q);if(status)p.set("status",status);if(stage)p.set("stage",stage);p.set("page",String(page));return`/contacts?${p.toString()}`;}
+export function ContactSearchTable({contacts,query,status,stage,page,totalPages,total}:{contacts:Contact[];query:string;status:string;stage:string;page:number;totalPages:number;total:number}){return <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"><form method="get" className="grid gap-3 border-b border-slate-100 p-4 md:grid-cols-[1fr_180px_210px_auto]"><input name="q" defaultValue={query} placeholder="جستجوی نام، شماره تماس یا منبع..." className="rounded-2xl border px-4 py-3 text-sm outline-none focus:border-amber-400"/><select name="status" defaultValue={status} className="rounded-2xl border bg-white px-4 py-3 text-sm"><option value="">همه وضعیت‌ها</option>{Object.entries(statusLabels).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select><select name="stage" defaultValue={stage} className="rounded-2xl border bg-white px-4 py-3 text-sm"><option value="">همه مراحل فروش</option>{Object.entries(stageLabels).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select><button className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-black text-white">اعمال فیلتر</button></form><div className="flex items-center justify-between px-4 py-3 text-xs text-slate-400"><span>{total.toLocaleString("fa-IR")} مخاطب</span><span>صفحه {page.toLocaleString("fa-IR")} از {totalPages.toLocaleString("fa-IR")}</span></div><div className="overflow-x-auto"><table className="w-full min-w-[900px] text-right text-sm"><thead className="bg-slate-50 text-xs text-slate-500"><tr><th className="px-5 py-4">نام</th><th>موبایل</th><th>وضعیت</th><th>مرحله فروش</th><th>منبع</th><th>تاریخ ثبت</th></tr></thead><tbody>{contacts.map(c=><tr key={c.id} className="border-t border-slate-100 hover:bg-slate-50"><td className="px-5 py-4 font-bold"><Link href={`/contacts/${c.id}`} className="hover:text-amber-600">{c.first_name} {c.last_name}</Link></td><td dir="ltr">{c.phone||"—"}</td><td><span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold">{statusLabels[c.status]||c.status}</span></td><td><span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">{stageLabels[c.sales_stage]||c.sales_stage||"—"}</span></td><td>{c.source||"—"}</td><td>{new Date(c.created_at).toLocaleDateString("fa-IR")}</td></tr>)}</tbody></table></div>{!contacts.length&&<div className="p-12 text-center text-sm text-slate-400">نتیجه‌ای پیدا نشد.</div>}{totalPages>1&&<div className="flex items-center justify-between border-t p-4"><Link href={href(Math.max(1,page-1),query,status,stage)} className={`rounded-xl border px-4 py-2 text-xs font-bold ${page<=1?"pointer-events-none opacity-40":""}`}>قبلی</Link><span className="text-xs text-slate-400">{page.toLocaleString("fa-IR")} / {totalPages.toLocaleString("fa-IR")}</span><Link href={href(Math.min(totalPages,page+1),query,status,stage)} className={`rounded-xl border px-4 py-2 text-xs font-bold ${page>=totalPages?"pointer-events-none opacity-40":""}`}>بعدی</Link></div>}</div>}
