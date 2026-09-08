@@ -1,10 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
 
-export default function NewFollowUpPage() {
+function NewFollowUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedContact = searchParams.get("contact") || "";
@@ -83,5 +83,13 @@ export default function NewFollowUpPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function NewFollowUpPage() {
+  return (
+    <Suspense fallback={<div className="max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 text-sm text-slate-500">در حال بارگذاری فرم پیگیری...</div>}>
+      <NewFollowUpForm />
+    </Suspense>
   );
 }
