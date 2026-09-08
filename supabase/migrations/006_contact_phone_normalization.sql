@@ -21,9 +21,31 @@ alter table public.contacts
     end
   ) stored;
 
-create unique index if not exists contacts_phone_normalized_uidx
-  on public.contacts(phone_normalized)
-  where phone_normalized is not null;
+create or replace function public.prevent_duplicate_contact_phone()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.phone_normalized is not null and new.phone_normalized <> '' then
+    if exists (
+      select 1 from public.contacts c
+      where c.phone_normalized = new.phone_normalized
+        and c.id <> coalesce(new.id, '00000000-0000-0000-0000-000000000000'::uuid)
+    ) then
+      raise exception 'duplicate_contact_phone' using errcode = '23505';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists contacts_prevent_duplicate_phone on public.contacts;
+create trigger contacts_prevent_duplicate_phone
+before insert or update of phone on public.contacts
+for each row execute procedure public.prevent_duplicate_contact_phone();
 
 create index if not exists contacts_phone_normalized_idx
-  on public.contacts(phone_normalized);
+  on public.contacts(phone_normalized)
+  where phone_normalized is not null;
