@@ -24,7 +24,7 @@ begin
   from public.registrations
   where course_id = new.course_id
     and status in ('pending', 'active')
-    and (tg_op = 'INSERT' or id <> new.id);
+    and (TG_OP = 'INSERT' or id <> new.id);
 
   if current_enrollment >= course_capacity and new.status in ('pending', 'active') then
     raise exception using
@@ -80,3 +80,53 @@ drop trigger if exists payments_registration_consistency on public.payments;
 create trigger payments_registration_consistency
 before insert or update of registration_id, contact_id on public.payments
 for each row execute procedure public.sync_payment_registration_contact();
+
+-- Do not allow the admin dashboard to create/delete arbitrary profile rows.
+-- Auth user creation remains the source of truth; this table only manages role/status.
+drop policy if exists "profiles_admin_all" on public.profiles;
+create policy "profiles_admin_update" on public.profiles
+for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create or replace function public.protect_admin_profile_lockout()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  active_admins integer;
+begin
+  if TG_OP = 'DELETE' then
+    raise exception using
+      errcode = 'restrict_violation',
+      message = 'حذف پروفایل از داخل CRM مجاز نیست.';
+  end if;
+
+  if OLD.id = auth.uid() and (NEW.is_active = false or NEW.role <> 'admin') then
+    raise exception using
+      errcode = 'restrict_violation',
+      message = 'مدیر فعلی نمی‌تواند حساب خودش را غیرفعال یا تنزل نقش دهد.';
+  end if;
+
+  if OLD.role = 'admin' and (NEW.role <> 'admin' or NEW.is_active = false) then
+    select count(*) into active_admins
+    from public.profiles
+    where role = 'admin' and is_active = true and id <> OLD.id;
+
+    if active_admins = 0 then
+      raise exception using
+        errcode = 'restrict_violation',
+        message = 'حداقل یک مدیر فعال باید در سیستم باقی بماند.';
+    end if;
+  end if;
+
+  return NEW;
+end;
+$$;
+
+drop trigger if exists profiles_admin_lockout_guard on public.profiles;
+create trigger profiles_admin_lockout_guard
+before update or delete on public.profiles
+for each row execute procedure public.protect_admin_profile_lockout();
