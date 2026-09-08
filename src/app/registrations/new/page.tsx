@@ -11,6 +11,7 @@ function RegistrationForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedCourse = searchParams.get("course") || "";
+  const preselectedContact = searchParams.get("contact") || "";
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [saving, setSaving] = useState(false);
@@ -40,13 +41,9 @@ function RegistrationForm() {
     });
 
     if (error) {
-      if (error.code === "23505") {
-        setError("این مخاطب قبلاً در این دوره ثبت‌نام شده است.");
-      } else if (error.code === "23514") {
-        setError("ظرفیت این دوره تکمیل شده است.");
-      } else {
-        setError("ثبت‌نام انجام نشد.");
-      }
+      if (error.code === "23505") setError("این مخاطب قبلاً در این دوره ثبت‌نام شده است.");
+      else if (error.code === "23514") setError("ظرفیت این دوره تکمیل شده است.");
+      else setError("ثبت‌نام انجام نشد.");
       setSaving(false);
       return;
     }
@@ -60,7 +57,7 @@ function RegistrationForm() {
       <div className="grid gap-4">
         <label>
           <span className="mb-2 block text-sm font-bold">مخاطب</span>
-          <select name="contact_id" required className="w-full rounded-2xl border p-3">
+          <select name="contact_id" required defaultValue={preselectedContact} className="w-full rounded-2xl border p-3">
             <option value="">انتخاب مخاطب</option>
             {contacts.map((c) => <option key={c.id} value={c.id}>{c.first_name} {c.last_name}</option>)}
           </select>
