@@ -23,26 +23,43 @@ export default async function Home() {
   const activities = (activitiesResponse.data || []) as unknown as Activity[];
   const pendingAmount = pending.data?.reduce((sum, row) => sum + Number(row.amount), 0) || 0;
   const stats = [
-    ["مخاطبین", contacts.count ?? 0, "کل پرونده‌ها"],
-    ["پیگیری امروز", today.count ?? 0, overdue.count ? `${overdue.count.toLocaleString("fa-IR")} پیگیری عقب‌افتاده` : "بدون پیگیری عقب‌افتاده"],
-    ["دوره‌های فعال", courses.count ?? 0, "دوره در حال برگزاری"],
-    ["پرداخت در انتظار", pending.count ?? 0, `${pendingAmount.toLocaleString("fa-IR")} تومان`],
+    ["مخاطبین", contacts.count ?? 0, "کل پرونده‌ها", "◎"],
+    ["پیگیری امروز", today.count ?? 0, overdue.count ? `${overdue.count.toLocaleString("fa-IR")} پیگیری عقب‌افتاده` : "بدون پیگیری عقب‌افتاده", "↻"],
+    ["دوره‌های فعال", courses.count ?? 0, "دوره در حال برگزاری", "▣"],
+    ["پرداخت در انتظار", pending.count ?? 0, `${pendingAmount.toLocaleString("fa-IR")} تومان`, "◈"],
   ];
   const modules = [
-    ["بانک اطلاعات", "مدیریت مخاطبین، پرونده‌ها و سوابق ارتباطی", "مشاهده مخاطبین", "/contacts"],
-    ["پیگیری‌ها", "پیگیری تماس‌ها، سرنخ‌ها و ارتباطات آینده", "مدیریت پیگیری‌ها", "/follow-ups"],
-    ["وظایف", "کارهای روزانه تیم را ثبت و اولویت‌بندی کنید", "مشاهده وظایف", "/tasks"],
-    ["دوره‌ها", "دوره‌ها، ظرفیت‌ها و ثبت‌نام‌ها را مدیریت کنید", "مدیریت دوره‌ها", "/courses"],
-    ["پرداخت‌ها", "وضعیت پرداخت‌ها و مبالغ دریافتی را دنبال کنید", "مشاهده پرداخت‌ها", "/payments"],
-    ["گزارش‌ها", "نمای مدیریتی از عملکرد و فعالیت‌های مجموعه", "مشاهده گزارش‌ها", "/reports"],
+    ["بانک اطلاعات", "مدیریت مخاطبین، پرونده‌ها و سوابق ارتباطی", "مشاهده مخاطبین", "/contacts", "◎"],
+    ["قیف فروش", "سرنخ‌ها را از اولین تماس تا مشتری شدن مدیریت کنید", "مشاهده قیف فروش", "/pipeline", "◫"],
+    ["پیگیری‌ها", "تماس‌ها و ارتباطات آینده را منظم و قابل پیگیری نگه دارید", "مدیریت پیگیری‌ها", "/follow-ups", "↻"],
+    ["وظایف", "کارهای روزانه تیم را ثبت و اولویت‌بندی کنید", "مشاهده وظایف", "/tasks", "✓"],
+    ["دوره‌ها", "دوره‌ها، ظرفیت‌ها و ثبت‌نام‌ها را مدیریت کنید", "مدیریت دوره‌ها", "/courses", "▣"],
+    ["پرداخت‌ها", "وضعیت پرداخت‌ها و مبالغ دریافتی را دنبال کنید", "مشاهده پرداخت‌ها", "/payments", "◈"],
   ] as const;
 
   return (
-    <div>
-      <section className="mb-8 overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl md:p-8"><span className="inline-flex rounded-full bg-amber-400/15 px-3 py-1 text-xs font-bold text-amber-300">TASNIM ROYAL CRM</span><h2 className="mt-4 text-2xl font-black tracking-tight md:text-3xl">مدیریت یکپارچه ارتباط با مشتری</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">همه اطلاعات، پیگیری‌ها، وظایف، دوره‌ها و پرداخت‌ها را در یک محیط منظم و ساده مدیریت کنید.</p></section>
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{stats.map(([label, value, hint]) => <article key={label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"><p className="text-sm font-bold text-slate-500">{label}</p><p className="mt-3 text-3xl font-black text-slate-950">{Number(value).toLocaleString("fa-IR")}</p><p className="mt-2 text-xs text-slate-400">{hint}</p></article>)}</section>
-      <section className="mt-8"><div className="mb-4"><p className="text-xs font-bold text-amber-600">MODULES</p><h3 className="mt-1 text-xl font-black">بخش‌های اصلی CRM</h3></div><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{modules.map(([title, description, action, href]) => <article key={title} className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-lg font-black text-amber-600">{title.slice(0, 1)}</div><h4 className="text-lg font-black">{title}</h4><p className="mt-2 min-h-14 text-sm leading-7 text-slate-500">{description}</p><Link href={href} className="mt-5 inline-block text-sm font-black text-slate-950 transition group-hover:text-amber-600">{action} ←</Link></article>)}</div></section>
-      <section className="mt-8 grid gap-4 lg:grid-cols-2"><article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h3 className="font-black">فعالیت‌های اخیر</h3><div className="mt-5 space-y-3">{activities.map((item) => { const contact = Array.isArray(item.contacts) ? item.contacts[0] : item.contacts; return <div key={item.id} className="rounded-2xl bg-slate-50 p-4"><p className="text-sm font-bold">{item.title}</p><p className="mt-1 text-xs text-slate-500">{contact ? `${contact.first_name || ""} ${contact.last_name || ""}` : "مخاطب نامشخص"} · {new Date(item.created_at).toLocaleString("fa-IR")}</p></div>; })}{!activities.length && <div className="rounded-2xl bg-slate-50 p-5 text-center text-sm text-slate-400">هنوز فعالیتی ثبت نشده است.</div>}</div></article><article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h3 className="font-black">اقدام سریع</h3><DashboardActions/></article></section>
+    <div className="space-y-7">
+      <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-[0_20px_60px_-25px_rgba(15,23,42,.45)] md:p-9">
+        <div className="absolute -left-16 -top-16 h-40 w-40 rounded-full bg-amber-400/10 blur-3xl" />
+        <div className="absolute -bottom-20 right-1/3 h-48 w-48 rounded-full bg-cyan-400/10 blur-3xl" />
+        <div className="relative">
+          <div className="flex flex-wrap items-center gap-3"><span className="rounded-full bg-amber-400/15 px-3 py-1 text-[11px] font-black tracking-[.18em] text-amber-300">TASNIM ROYAL CRM</span><span className="rounded-full border border-white/10 px-3 py-1 text-[11px] font-bold text-slate-300">پنل مدیریت</span></div>
+          <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-tight md:text-4xl">همه‌چیز برای مدیریت مشتری، فروش و پیگیری در یکجا</h2>
+          <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-300">داشبورد روزانه‌ات را سریع ببین، روی کارهای مهم تمرکز کن و بدون رفت‌وآمد بین چند سیستم تیم را جلو ببر.</p>
+          <div className="mt-6 flex flex-wrap gap-3"><Link href="/contacts/new" className="rounded-2xl bg-amber-400 px-5 py-3 text-sm font-black text-slate-950 shadow-lg shadow-amber-400/20 hover:-translate-y-0.5 hover:bg-amber-300">+ افزودن مخاطب</Link><Link href="/pipeline" className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-black text-white hover:bg-white/10">مشاهده قیف فروش</Link></div>
+        </div>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map(([label, value, hint, icon]) => <article key={label} className="group rounded-[1.6rem] border border-slate-200/80 bg-white p-5 shadow-[0_12px_35px_-22px_rgba(15,23,42,.35)] transition hover:-translate-y-1 hover:shadow-xl"><div className="flex items-start justify-between"><div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-lg text-amber-400">{icon}</div><span className="text-[11px] font-bold text-slate-400">KPI</span></div><p className="mt-5 text-sm font-bold text-slate-500">{label}</p><p className="mt-1 text-3xl font-black tracking-tight text-slate-950">{Number(value).toLocaleString("fa-IR")}</p><p className="mt-2 text-xs text-slate-400">{hint}</p></article>)}
+      </section>
+
+      <section>
+        <div className="mb-4 flex items-end justify-between"><div><p className="text-[11px] font-black tracking-[.2em] text-amber-600">WORKSPACE</p><h3 className="mt-1 text-2xl font-black tracking-tight">دسترسی سریع</h3></div><Link href="/reports" className="text-xs font-black text-slate-500 hover:text-amber-600">گزارش‌ها ←</Link></div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{modules.map(([title, description, action, href, icon]) => <Link href={href} key={title} className="group rounded-[1.6rem] border border-slate-200/80 bg-white p-6 shadow-[0_12px_35px_-22px_rgba(15,23,42,.3)] hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl"><div className="flex items-center justify-between"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-lg font-black text-amber-700">{icon}</div><span className="text-xl text-slate-200 transition group-hover:translate-x-1 group-hover:text-amber-500">←</span></div><h4 className="mt-5 text-lg font-black">{title}</h4><p className="mt-2 min-h-14 text-sm leading-7 text-slate-500">{description}</p><p className="mt-5 text-sm font-black text-slate-950 group-hover:text-amber-600">{action}</p></Link>)}</div>
+      </section>
+
+      <section className="grid gap-5 lg:grid-cols-[1.4fr_1fr]"><article className="rounded-[1.6rem] border border-slate-200/80 bg-white p-6 shadow-[0_12px_35px_-22px_rgba(15,23,42,.3)]"><div className="flex items-center justify-between"><div><p className="text-[11px] font-black tracking-[.18em] text-slate-400">TIMELINE</p><h3 className="mt-1 text-xl font-black">فعالیت‌های اخیر</h3></div><Link href="/contacts" className="text-xs font-black text-slate-500 hover:text-amber-600">مشاهده بانک اطلاعات ←</Link></div><div className="mt-5 space-y-3">{activities.map((item) => { const contact = Array.isArray(item.contacts) ? item.contacts[0] : item.contacts; return <div key={item.id} className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4"><div className="mt-0.5 h-9 w-9 shrink-0 rounded-xl bg-white text-center pt-2 text-sm font-black text-amber-600 shadow-sm">•</div><div className="min-w-0"><p className="truncate text-sm font-bold">{item.title}</p><p className="mt-1 text-xs text-slate-500">{contact ? `${contact.first_name || ""} ${contact.last_name || ""}` : "مخاطب نامشخص"} · {new Date(item.created_at).toLocaleString("fa-IR")}</p></div></div>; })}{!activities.length && <div className="rounded-2xl bg-slate-50 p-6 text-center text-sm text-slate-400">هنوز فعالیتی ثبت نشده است.</div>}</div></article><article className="rounded-[1.6rem] border border-slate-200/80 bg-white p-6 shadow-[0_12px_35px_-22px_rgba(15,23,42,.3)]"><p className="text-[11px] font-black tracking-[.18em] text-amber-600">QUICK ACTIONS</p><h3 className="mt-1 text-xl font-black">اقدام سریع</h3><div className="mt-5"><DashboardActions/></div></article></section>
     </div>
   );
 }
