@@ -3,17 +3,19 @@
 import { useRouter } from "next/navigation";
 
 const actions = [
-  ["مخاطبین", "/contacts"],
-  ["پیگیری‌ها", "/follow-ups"],
-  ["وظایف", "/tasks"],
-  ["پرداخت‌ها", "/payments"],
+  ["مخاطب جدید", "/contacts/new"],
+  ["پیگیری جدید", "/follow-ups/new"],
+  ["وظیفه جدید", "/tasks/new"],
+  ["ثبت‌نام جدید", "/registrations/new"],
+  ["پرداخت جدید", "/payments/new"],
+  ["گزارش‌ها", "/reports"],
 ] as const;
 
 export function DashboardActions() {
   const router = useRouter();
 
   return (
-    <div className="mt-5 grid grid-cols-2 gap-3">
+    <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3">
       {actions.map(([label, href]) => (
         <button
           key={href}
