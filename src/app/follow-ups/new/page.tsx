@@ -1,12 +1,87 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
 
 export default function NewFollowUpPage() {
-  const router = useRouter(); const [contacts, setContacts] = useState<{id:string; first_name:string; last_name:string}[]>([]); const [saving,setSaving]=useState(false); const [error,setError]=useState("");
-  useEffect(()=>{ createClient().from("contacts").select("id,first_name,last_name").order("first_name").limit(200).then(({data})=>setContacts(data||[])); },[]);
-  async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setSaving(true);setError("");const f=new FormData(e.currentTarget);const {error}=await createClient().from("follow_ups").insert({contact_id:f.get("contact_id"),title:String(f.get("title")||"").trim(),due_at:f.get("due_at"),status:f.get("status"),notes:String(f.get("notes")||"").trim()||null});if(error){setError("ثبت پیگیری انجام نشد.");setSaving(false);return;}router.push("/follow-ups");router.refresh();}
-  return <div className="max-w-2xl"><h1 className="text-2xl font-black">پیگیری جدید</h1><p className="mt-2 text-sm text-slate-500">ثبت یک پیگیری برای مخاطب</p><form onSubmit={submit} className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><div className="grid gap-4"><label><span className="mb-2 block text-sm font-bold">مخاطب</span><select name="contact_id" required className="w-full rounded-2xl border p-3"><option value="">انتخاب مخاطب</option>{contacts.map(c=><option key={c.id} value={c.id}>{c.first_name} {c.last_name}</option>)}</select></label><label><span className="mb-2 block text-sm font-bold">عنوان</span><input name="title" required className="w-full rounded-2xl border p-3" /></label><label><span className="mb-2 block text-sm font-bold">زمان پیگیری</span><input name="due_at" type="datetime-local" required className="w-full rounded-2xl border p-3" /></label><label><span className="mb-2 block text-sm font-bold">وضعیت</span><select name="status" defaultValue="pending" className="w-full rounded-2xl border p-3"><option value="pending">در انتظار</option><option value="done">انجام‌شده</option><option value="cancelled">لغوشده</option></select></label><label><span className="mb-2 block text-sm font-bold">یادداشت</span><textarea name="notes" rows={3} className="w-full rounded-2xl border p-3" /></label></div>{error&&<p className="mt-4 text-sm font-bold text-red-600">{error}</p>}<div className="mt-5 flex gap-3"><button type="button" onClick={()=>router.back()} className="rounded-2xl border px-5 py-3 font-bold">انصراف</button><button disabled={saving} className="rounded-2xl bg-slate-950 px-6 py-3 font-black text-white">{saving?"در حال ثبت...":"ثبت پیگیری"}</button></div></form></div>;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedContact = searchParams.get("contact") || "";
+  const [contacts, setContacts] = useState<{ id: string; first_name: string; last_name: string }[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    createClient()
+      .from("contacts")
+      .select("id,first_name,last_name")
+      .order("first_name")
+      .limit(500)
+      .then(({ data }) => setContacts(data || []));
+  }, []);
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+    const f = new FormData(e.currentTarget);
+    const { error } = await createClient().from("follow_ups").insert({
+      contact_id: f.get("contact_id"),
+      title: String(f.get("title") || "").trim(),
+      due_at: f.get("due_at"),
+      status: f.get("status"),
+      notes: String(f.get("notes") || "").trim() || null,
+    });
+    if (error) {
+      setError("ثبت پیگیری انجام نشد.");
+      setSaving(false);
+      return;
+    }
+    router.push("/follow-ups");
+    router.refresh();
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="text-2xl font-black">پیگیری جدید</h1>
+      <p className="mt-2 text-sm text-slate-500">ثبت یک پیگیری برای مخاطب</p>
+      <form onSubmit={submit} className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="grid gap-4">
+          <label>
+            <span className="mb-2 block text-sm font-bold">مخاطب</span>
+            <select name="contact_id" required defaultValue={preselectedContact} className="w-full rounded-2xl border p-3">
+              <option value="">انتخاب مخاطب</option>
+              {contacts.map((c) => <option key={c.id} value={c.id}>{c.first_name} {c.last_name}</option>)}
+            </select>
+          </label>
+          <label>
+            <span className="mb-2 block text-sm font-bold">عنوان</span>
+            <input name="title" required className="w-full rounded-2xl border p-3" />
+          </label>
+          <label>
+            <span className="mb-2 block text-sm font-bold">زمان پیگیری</span>
+            <input name="due_at" type="datetime-local" required className="w-full rounded-2xl border p-3" />
+          </label>
+          <label>
+            <span className="mb-2 block text-sm font-bold">وضعیت</span>
+            <select name="status" defaultValue="pending" className="w-full rounded-2xl border p-3">
+              <option value="pending">در انتظار</option>
+              <option value="done">انجام‌شده</option>
+              <option value="cancelled">لغوشده</option>
+            </select>
+          </label>
+          <label>
+            <span className="mb-2 block text-sm font-bold">یادداشت</span>
+            <textarea name="notes" rows={3} className="w-full rounded-2xl border p-3" />
+          </label>
+        </div>
+        {error && <p className="mt-4 text-sm font-bold text-red-600">{error}</p>}
+        <div className="mt-5 flex gap-3">
+          <button type="button" onClick={() => router.back()} className="rounded-2xl border px-5 py-3 font-bold">انصراف</button>
+          <button disabled={saving} className="rounded-2xl bg-slate-950 px-6 py-3 font-black text-white">{saving ? "در حال ثبت..." : "ثبت پیگیری"}</button>
+        </div>
+      </form>
+    </div>
+  );
 }
