@@ -8,8 +8,9 @@
    - `supabase/migrations/001_initial_schema.sql`
    - `supabase/migrations/002_harden_rls.sql`
    - `supabase/migrations/003_business_rules.sql`
+   - `supabase/migrations/004_admin_safety.sql`
 
-Migration دوم سطح دسترسی عملیاتی CRM و به‌روزرسانی خودکار `updated_at` را سخت‌گیرانه‌تر می‌کند. Migration سوم قوانین تجاری ظرفیت دوره و سازگاری پرداخت با ثبت‌نام را در سطح دیتابیس enforce می‌کند.
+Migration دوم سطح دسترسی عملیاتی CRM و به‌روزرسانی خودکار `updated_at` را سخت‌گیرانه‌تر می‌کند. Migration سوم قوانین تجاری ظرفیت دوره و سازگاری پرداخت با ثبت‌نام را در سطح دیتابیس enforce می‌کند. Migration چهارم از قفل‌شدن سیستم به‌دلیل تغییر یا حذف مدیر فعال جلوگیری می‌کند.
 
 ## 2. حساب اصلی
 
