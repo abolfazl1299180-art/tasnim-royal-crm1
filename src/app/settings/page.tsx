@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/ui/page-header";
+import { TeamManagement } from "@/components/settings/team-management";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -38,6 +39,7 @@ export default async function SettingsPage() {
           <h2 className="font-black">امنیت</h2>
           <p className="mt-3 text-sm leading-7 text-slate-500">احراز هویت با Supabase و سطح دسترسی با RLS کنترل می‌شود. رمز عبور هرگز در GitHub ذخیره نمی‌شود.</p>
         </section>
+        <TeamManagement currentUserId={user.id} />
       </div>
     </>
   );
