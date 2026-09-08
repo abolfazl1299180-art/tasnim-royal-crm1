@@ -7,8 +7,9 @@
 3. فایل‌های migration را به‌ترتیب در SQL Editor اجرا کنید:
    - `supabase/migrations/001_initial_schema.sql`
    - `supabase/migrations/002_harden_rls.sql`
+   - `supabase/migrations/003_business_rules.sql`
 
-Migration دوم سطح دسترسی عملیاتی CRM و به‌روزرسانی خودکار `updated_at` را سخت‌گیرانه‌تر می‌کند.
+Migration دوم سطح دسترسی عملیاتی CRM و به‌روزرسانی خودکار `updated_at` را سخت‌گیرانه‌تر می‌کند. Migration سوم قوانین تجاری ظرفیت دوره و سازگاری پرداخت با ثبت‌نام را در سطح دیتابیس enforce می‌کند.
 
 ## 2. حساب اصلی
 
