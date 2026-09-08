@@ -14,13 +14,12 @@ export default async function RegistrationsPage({ searchParams }: { searchParams
 
   if (courseId) query = query.eq("course_id", courseId);
   const { data: registrations } = await query;
-  const filteredCourse = registrations?.find((r) => {
-    const course = Array.isArray(r.courses) ? r.courses[0] : r.courses;
-    return course?.id === courseId;
-  });
-  const courseTitle = courseId
-    ? ((filteredCourse?.courses && (Array.isArray(filteredCourse.courses) ? filteredCourse.courses[0]?.title : filteredCourse.courses.title)) || "دوره انتخاب‌شده")
-    : null;
+
+  let courseTitle: string | null = null;
+  if (courseId) {
+    const { data: course } = await supabase.from("courses").select("title").eq("id", courseId).maybeSingle();
+    courseTitle = course?.title ?? "دوره انتخاب‌شده";
+  }
 
   return (
     <>
