@@ -122,17 +122,24 @@ alter table public.tags enable row level security;
 alter table public.contact_tags enable row level security;
 alter table public.audit_logs enable row level security;
 
-create policy if not exists "tags_authenticated_read" on public.tags
+drop policy if exists "tags_authenticated_read" on public.tags;
+create policy "tags_authenticated_read" on public.tags
 for select to authenticated using (true);
-create policy if not exists "tags_staff_write" on public.tags
+
+drop policy if exists "tags_staff_write" on public.tags;
+create policy "tags_staff_write" on public.tags
 for all to authenticated using (public.current_role() in ('admin','manager','sales','support'))
 with check (public.current_role() in ('admin','manager','sales','support'));
 
-create policy if not exists "contact_tags_authenticated_read" on public.contact_tags
+drop policy if exists "contact_tags_authenticated_read" on public.contact_tags;
+create policy "contact_tags_authenticated_read" on public.contact_tags
 for select to authenticated using (true);
-create policy if not exists "contact_tags_staff_write" on public.contact_tags
+
+drop policy if exists "contact_tags_staff_write" on public.contact_tags;
+create policy "contact_tags_staff_write" on public.contact_tags
 for all to authenticated using (public.current_role() in ('admin','manager','sales','support'))
 with check (public.current_role() in ('admin','manager','sales','support'));
 
-create policy if not exists "audit_logs_staff_read" on public.audit_logs
+drop policy if exists "audit_logs_staff_read" on public.audit_logs;
+create policy "audit_logs_staff_read" on public.audit_logs
 for select to authenticated using (public.current_role() in ('admin','manager','sales','support','viewer'));
