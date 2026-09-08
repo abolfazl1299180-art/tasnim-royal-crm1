@@ -10,12 +10,14 @@ type Role = "admin" | "manager" | "sales" | "support" | "viewer";
 const navigation: Array<{ label: string; href: string; icon: string; adminOnly?: boolean }> = [
   { label: "داشبورد", href: "/", icon: "⌂" },
   { label: "بانک اطلاعات", href: "/contacts", icon: "◎" },
+  { label: "قیف فروش", href: "/pipeline", icon: "◫" },
   { label: "پیگیری‌ها", href: "/follow-ups", icon: "↻" },
   { label: "وظایف", href: "/tasks", icon: "✓" },
   { label: "دوره‌ها", href: "/courses", icon: "▣" },
   { label: "ثبت‌نام‌ها", href: "/registrations", icon: "＋" },
   { label: "پرداخت‌ها", href: "/payments", icon: "◈" },
   { label: "گزارش‌ها", href: "/reports", icon: "▤" },
+  { label: "گزارش تغییرات", href: "/audit", icon: "◌" },
   { label: "تنظیمات", href: "/settings", icon: "⚙", adminOnly: true },
 ];
 
