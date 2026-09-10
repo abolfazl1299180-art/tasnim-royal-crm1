@@ -8,27 +8,68 @@
 }
 
 * { box-sizing: border-box; }
-html { direction: rtl; }
+html { direction: rtl; scroll-behavior: smooth; }
 html, body { min-height: 100%; }
 body {
   margin: 0;
-  background: var(--background);
+  background:
+    radial-gradient(circle at 90% -10%, rgb(245 158 11 / 6%), transparent 24rem),
+    radial-gradient(circle at 10% 110%, rgb(14 165 233 / 4%), transparent 22rem),
+    var(--background);
   color: var(--foreground);
   font-family: "Vazirmatn", sans-serif;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 button, input, select, textarea { font: inherit; }
 button, a, select, input[type="checkbox"], input[type="radio"] { -webkit-tap-highlight-color: transparent; }
 input, select, textarea { max-width: 100%; }
 textarea { resize: vertical; }
-button, a { transition: all 180ms ease; }
+button, a { transition: transform 180ms ease, box-shadow 220ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease, opacity 180ms ease; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgb(245 158 11 / 20%); outline-offset: 2px; }
+
+@keyframes crm-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes crm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes crm-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes crm-pulse-soft { 0%, 100% { box-shadow: 0 0 0 0 rgb(212 175 55 / 0); } 50% { box-shadow: 0 0 0 8px rgb(212 175 55 / 7%); } }
+@keyframes crm-shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+@keyframes crm-sheen { 0% { background-position: 180% 0; } 100% { background-position: -40% 0; } }
+
+.crm-animate { animation: crm-fade-up 520ms cubic-bezier(.22,1,.36,1) both; }
+.crm-fade { animation: crm-fade-in 420ms ease both; }
+.crm-float { animation: crm-float 4.5s ease-in-out infinite; }
+.crm-pulse-soft { animation: crm-pulse-soft 2.8s ease-in-out infinite; }
+.crm-stagger > * { animation: crm-fade-up 520ms cubic-bezier(.22,1,.36,1) both; }
+.crm-stagger > *:nth-child(1) { animation-delay: 50ms; }
+.crm-stagger > *:nth-child(2) { animation-delay: 100ms; }
+.crm-stagger > *:nth-child(3) { animation-delay: 150ms; }
+.crm-stagger > *:nth-child(4) { animation-delay: 200ms; }
+.crm-stagger > *:nth-child(5) { animation-delay: 250ms; }
+.crm-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.crm-stagger > *:nth-child(7) { animation-delay: 350ms; }
+.crm-stagger > *:nth-child(8) { animation-delay: 400ms; }
+
+.crm-hover-lift { will-change: transform; }
+.crm-hover-lift:hover { transform: translateY(-5px); }
+.crm-glow:hover { box-shadow: 0 18px 45px -28px rgb(15 23 42 / 45%), 0 0 0 1px rgb(245 158 11 / 8%); }
+.crm-shimmer { position: relative; overflow: hidden; }
+.crm-shimmer::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 35%; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 12%), transparent); transform: translateX(-120%); pointer-events: none; }
+.crm-shimmer:hover::after { animation: crm-shimmer 900ms ease; }
+.crm-sheen { background: linear-gradient(110deg, transparent 0%, transparent 35%, rgb(255 255 255 / 8%) 45%, transparent 55%, transparent 100%); background-size: 220% 100%; }
+.crm-sheen:hover { animation: crm-sheen 900ms ease; }
+.crm-page-enter { animation: crm-fade-up 420ms cubic-bezier(.22,1,.36,1) both; }
 
 @media (max-width: 639px) {
   input, select, textarea { font-size: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
