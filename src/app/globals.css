@@ -27,6 +27,9 @@ button, a, select, input[type="checkbox"], input[type="radio"] { -webkit-tap-hig
 input, select, textarea { max-width: 100%; }
 textarea { resize: vertical; }
 button, a { transition: transform 180ms ease, box-shadow 220ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease, opacity 180ms ease; }
+input, select, textarea { transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease, transform 180ms ease; }
+input:hover, select:hover, textarea:hover { border-color: rgb(203 213 225); }
+input:focus, select:focus, textarea:focus { transform: translateY(-1px); box-shadow: 0 8px 24px -18px rgb(15 23 42 / 30%); }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgb(245 158 11 / 20%); outline-offset: 2px; }
 
 @keyframes crm-fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
@@ -49,6 +52,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .crm-stagger > *:nth-child(6) { animation-delay: 300ms; }
 .crm-stagger > *:nth-child(7) { animation-delay: 350ms; }
 .crm-stagger > *:nth-child(8) { animation-delay: 400ms; }
+.crm-page-enter > * { animation: crm-fade-up 460ms cubic-bezier(.22,1,.36,1) both; }
+.crm-page-enter > *:nth-child(1) { animation-delay: 30ms; }
+.crm-page-enter > *:nth-child(2) { animation-delay: 70ms; }
+.crm-page-enter > *:nth-child(3) { animation-delay: 110ms; }
+.crm-page-enter > *:nth-child(4) { animation-delay: 150ms; }
+.crm-page-enter > *:nth-child(5) { animation-delay: 190ms; }
+.crm-page-enter > *:nth-child(6) { animation-delay: 230ms; }
 
 .crm-hover-lift { will-change: transform; }
 .crm-hover-lift:hover { transform: translateY(-5px); }
